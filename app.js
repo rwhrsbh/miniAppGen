@@ -1,6 +1,7 @@
 const API_KEY = 'AIzaSyDGdRop5G44CoLOYhD-mh2bR7eJqnt1JzQ';
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent';
 
+let isGenerating = false;
 const appRequestInput = document.getElementById('app-request');
 const generateBtn = document.getElementById('generate-btn');
 const appContainer = document.getElementById('app-container');
@@ -73,10 +74,10 @@ document.addEventListener('click', (event) => {
 
 generateBtn.addEventListener('click', async () => {
     const request = appRequestInput.value.trim();
-    if (!request) return;
+    if (!request || isGenerating) return;
     
     currentRequest = request;
-
+    
     const savedApps = getSavedApps();
     similarAppFound = savedApps.find(app => 
         app.title.toLowerCase() === request.toLowerCase() ||
@@ -100,7 +101,9 @@ useExistingBtn.addEventListener('click', () => {
 
 createNewBtn.addEventListener('click', async () => {
     existingAppDialog.style.display = 'none';
-    await generateApp(currentRequest);
+    if (!isGenerating) {
+        await generateApp(currentRequest);
+    }
 });
 function cleanMarkdownCode(code) {
     let cleanedCode = code.replace(/^```(html|javascript|js|css)?\s*/i, '');
@@ -112,12 +115,16 @@ function cleanMarkdownCode(code) {
 }
 
 async function generateApp(request) {
+    isGenerating = true;
+    generateBtn.disabled = true;
+    generateBtn.classList.add('btn-loading');
+    
     appContainer.innerHTML = `
         <div class="loading">
             <div class="spinner"></div>
         </div>
     `;
-
+    
     try {
         const prompt = `
             Create a web application at the following user request: "${request}".
@@ -160,17 +167,17 @@ async function generateApp(request) {
                 }]
             })
         });
-
+        
         if (!response.ok) {
             throw new Error(`Error during API request: ${response.status} ${response.statusText}`);
         }
-
+        
         const data = await response.json();
-
+        
         if (!data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0] || !data.candidates[0].content.parts[0].text) {
             throw new Error('Incorrect API response format');
         }
-
+        
         let generatedCode = data.candidates[0].content.parts[0].text;
         console.log("Got the code from Gemini (top):", generatedCode.substring(0, 100));
 
@@ -224,7 +231,7 @@ async function generateApp(request) {
             code: generatedCode,
             createdAt: new Date().toISOString()
         });
-
+        
     } catch (error) {
         console.error('Error during application generation:', error);
         appContainer.innerHTML = `
@@ -233,6 +240,10 @@ async function generateApp(request) {
                 <p>${error.message || 'Unknown bug'}</p>
             </div>
         `;
+    } finally {
+        isGenerating = false;
+        generateBtn.disabled = false;
+        generateBtn.classList.remove('btn-loading');
     }
 }
 
