@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App Gen</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mini App Generator</h1>
+            <p>Describe what application you want to create, and we will generate it for you</p>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="generator">Generator</div>
+            <div class="tab" data-tab="library">Library</div>
+        </div>
+        
+        <div class="tab-content active" id="generator">
+            <div class="app-form">
+                <div class="input-group">
+                    <input type="text" class="input-field" id="app-request" placeholder="Describe the application you want to create...">
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+                <button class="btn" id="generate-btn">Generate mini app</button>
+            </div>
+            
+            <div class="app-result" id="app-result">
+                <div id="app-container"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="library">
+            <div class="app-library" id="app-library">
+            </div>
+        </div>
+    </div>
+    
+    <div class="dialog" id="existing-app-dialog">
+        <div class="dialog-content">
+            <div class="dialog-title">Similar application already exists</div>
+            <p>An application with the same name already exists in your library. Do you want to use an existing application or create a new one?</p>
+            <div class="dialog-buttons">
+                <button class="btn btn-secondary" id="use-existing-btn">Use existing</button>
+                <button class="btn" id="create-new-btn">Create new</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
