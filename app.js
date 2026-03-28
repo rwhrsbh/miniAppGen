@@ -1,5 +1,5 @@
 const API_KEY = 'AIzaSyDGdRop5G44CoLOYhD-mh2bR7eJqnt1JzQ';
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent';
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
 
 let isGenerating = false;
 const appRequestInput = document.getElementById('app-request');
